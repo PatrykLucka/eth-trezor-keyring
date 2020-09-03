@@ -3,7 +3,7 @@ const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const HDKey = require('hdkey')
 const TrezorConnect = require('trezor-connect').default
-const hdPathString = `m/44'/60'/0'/0/0`
+const hdPathString = `m/44'/60'/0'/0`
 const keyringType = 'Trezor Hardware'
 const pathBase = 'm'
 const MAX_INDEX = 1000
@@ -52,10 +52,13 @@ class TrezorKeyring extends EventEmitter {
 
   unlock () {
     if (this.isUnlocked()) return Promise.resolve('already unlocked')
+    console.log('returning')
     return new Promise((resolve, reject) => {
+      console.log('calling')
       TrezorConnect.ethereumGetPublicKey({
           path: this.hdPath,
         }).then(response => {
+          console.log('response')
           if (response.success) {
             this.hdk.publicKey = new Buffer(response.payload.publicKey, 'hex')
             this.hdk.chainCode = new Buffer(response.payload.chainCode, 'hex')
@@ -64,6 +67,7 @@ class TrezorKeyring extends EventEmitter {
             reject(new Error(response.payload && response.payload.error || 'Unknown error'))
           }
         }).catch(e => {
+          console.log('error')
           reject(new Error(e && e.toString() || 'Unknown error'))
         })
     })
