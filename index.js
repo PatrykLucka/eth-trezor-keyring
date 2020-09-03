@@ -53,9 +53,8 @@ class TrezorKeyring extends EventEmitter {
   unlock () {
     if (this.isUnlocked()) return Promise.resolve('already unlocked')
     return new Promise((resolve, reject) => {
-      TrezorConnect.getPublicKey({
+      TrezorConnect.ethereumGetPublicKey({
           path: this.hdPath,
-          coin: 'ETH',
         }).then(response => {
           if (response.success) {
             this.hdk.publicKey = new Buffer(response.payload.publicKey, 'hex')
