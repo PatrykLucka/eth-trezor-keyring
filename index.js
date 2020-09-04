@@ -52,22 +52,17 @@ class TrezorKeyring extends EventEmitter {
 
   unlock () {
     if (this.isUnlocked()) return Promise.resolve('already unlocked')
-    console.log('returning')
     return new Promise((resolve, reject) => {
-      console.log('calling')
       TrezorConnect.ethereumGetPublicKey({
           path: this.hdPath,
         }).then(response => {
-          console.log('response')
           if (response.success) {
             this.hdk.publicKey = new Buffer(response.payload.publicKey, 'hex')
             this.hdk.chainCode = new Buffer(response.payload.chainCode, 'hex')
-            resolve('just unlocked')
           } else {
             reject(new Error(response.payload && response.payload.error || 'Unknown error'))
           }
         }).catch(e => {
-          console.log('error')
           reject(new Error(e && e.toString() || 'Unknown error'))
         })
     })
